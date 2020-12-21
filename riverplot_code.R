@@ -1,6 +1,6 @@
-##Idea from https://coolbutuseless.github.io/package/devoutsvg/articles/svg-with-gradient-fill.html
+##Idea from https://coolbutuseless.github.io/package/devoutsvg/articles/svg-with-gradient-fill.html adapted to plot year over year river flow data
 
-##Load the packages
+##Load and install packages
 install.packages("here")
 install.packages("data.table")
 install.packages("tidyverse")
@@ -49,15 +49,16 @@ library(svgpatternsimple)
 library(poissoned)
 
 
-#-------------------------------------------------------------INPUT Station Number data-------------------------
+#-------------------------------------------------------------INPUT USGS Station Number data-------------------------
 ##Enter parameters  
 siteNumber <- "14105700" 
 Beginyear<- 1995
 Endyear<-2018
 Beginmonthday <- "01-01"
 Endmonthday <- "12-1"
-#Set's values for graph 
 
+
+#Sets values for graph 
 RiverInfo <- readNWISsite(siteNumber)
 ChartTitle <- RiverInfo$station_nm
 SubTitle <- paste("Cubic Feet Per Second (CFS)", Beginyear, "to", Endyear)
@@ -75,10 +76,6 @@ names(prdata)[2] <- "cfs"
 prdata$timestamp <- as.Date(prdata$timestamp)
 
 
-
-#-------------------- Add a row to January 2, 1992 of 30,000 CFS - payette river at Payette-----------------------------------------------
-#prdata <- prdata %>% add_row(timestamp = ymd_hms("1997-01-02 15:00:00"), cfs = 30000)
-#-------------------------------------------------------------------------------------------------------------
 #Grab the maximum value each day
 prdata_hour <- prdata %>% mutate(year = year(timestamp), month = month(timestamp), day = day(timestamp)) %>% 
 		group_by(year,month, day) %>% slice(which.max(cfs))%>%
